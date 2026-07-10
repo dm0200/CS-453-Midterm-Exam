@@ -1,4 +1,5 @@
-//src/middleware/errorHandler.js
+// errorHandler.js catches global level errors
+// src/middleware/errorHandler.js
 export function errorHandler(err, req, res, next) {
     console.error(`${req.requestId || 'SERVER'} ERROR`, err);
 

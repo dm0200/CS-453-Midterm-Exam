@@ -1,7 +1,8 @@
-// This file handles data stored array, IDs, field validation, and individual routes behaviors.
-//src/routes/tasks.js
+// tasks.js handles data stored array, IDs, field validation, and individual routes behaviors.
+// src/routes/tasks.js
 
 import { Router } from "express";
+import { validateTask } from "../middleware/validateTask.js";
 
 export const router = Router();
 
@@ -32,22 +33,24 @@ router.get("/:id", (req, res) => {
 });
 
 // POST /api/tasks => creates a new task
-router.post("/", (req, res) => {
+router.post("/", validateTask, (req, res) => {
     const {title, course, completed} = req.body;
 
+    /*
     // Checks for required fields
     if (!title || !course) {
         return res.status(400).json({
             error: "Missing required fields: title and course are required"
         });
     }
+    */
 
     // Creates a new item.
     const newTask = {
         id: nextId++,
-        title,
-        course,
-        completed: completed ?? false // Defaults to false
+        title: title.trim(),
+        course: course.trim(),
+        completed: completed ?? false // Automatically defaults to false
     };
 
     tasks.push(newTask);
@@ -56,7 +59,7 @@ router.post("/", (req, res) => {
 
 
 // PUT /api/tasks/:id => replace a task
-router.put("/:id", (req,res) => {
+router.put("/:id", validateTask, (req,res) => {
     const id = Number(req.params.id);
     const taskIndex = tasks.findIndex(t => t.id == id);
 
@@ -69,17 +72,18 @@ router.put("/:id", (req,res) => {
     const {title, course, completed} = req.body;
 
     // Checks for required fields
-    if (!title || !course || completed === undefined) {
+    if (completed === undefined) {
         return res.status(400).json({
-            error: "Missing required fields: title and course are required"
+            error: "Missing required fields: complete is required"
         });
     }
 
     tasks[taskIndex] = {
         id,
-        title,
-        course,
-        completed: completed ?? false }; // Automatically Default to false
+        title: title.trim(),
+        course: course.trim(),
+        completed
+    };
     res.json(tasks[taskIndex]);
 });
 

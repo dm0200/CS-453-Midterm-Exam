@@ -216,234 +216,20 @@ src/
 **30 points**
 
 ```
+************ TO DO ************
 // server.js initializes Express, attaches the middleware, mapping the routing & handles healthpoint
-//src/server.js
+// src/server.js
 
-//import "dotenv/config";
-import express from "express";
+// tasks.js handles data stored array, IDs, field validation, and individual routes behaviors.
+// src/routes/tasks.js
 
-//import { requestId } from "./middleware/requestId.js";
-//import { requireApiKey } from "./middleware/requireApiKey.js";
-//import { notFound } from "./middleware/notFound.js";
-import { router as tasksRouter } from "./routes/tasks.js";
-import { logger } from "./middleware/logger.js";
-import { errorHandler } from "./middleware/errorHandler.js";
+// src/middleware/logger.js
 
-const PORT = process.env.PORT || 3000;
+// src/middleware/errorHandler.js
 
-export function createApp() {
-   const app = express();
-   
-   // Built-in middleware for JSON request bodies.
-   app.use(express.json());
-   
-   // Application-level middleware.
-   //app.use(requestId);
-   app.use(logger);
-   
-   // Health checkpoint
-   app.get("health", (req, res) => {
-      res.json({
-         status: "ok",
-         message: "Server is healthy"
-      });
-   });
-     
-   // Task resource routes grouped under /api/tasks
-   app.use("api/tasks", tasksRouter);
-   
-   // Global centralized error handling middleware
-   app.use(errorHandler);
-   
-   return app;
-}
+// package.json
 
-const app = createApp();
-
-app.listen(PORT, () => {
-   console.log(`Course Task Tracker listening on port ${PORT}`);
-});
-   
-   
-// This file handles data stored array, IDs, field validation, and individual routes behaviors.
-src/routes/tasks.js
-
-import { Router } from "express";
-
-export const router = Router();
-
-// In-memory database array
-let nextID = 3;
-let tasks = [
-   { id: 1, title: "Watch Week 1 lecture, course: "CS453", completed: false },
-   { id: 2, title: "Complete Lab 1", course: "CS453", completed: true }
-];
-
-// GET /api/tasks => return all tasks
-router.get("/", (req, res) => {
-   res.json(tasks);
-});
-
-// GET /api/tasks/:id => return one task
-router.get("/", (req, res) => {
-   const id = Number(req.params.id);
-   const task = tasks.find(t => t.id === id);
-   
-   if(!task) {
-      return res.status(404).json({
-         error: "Not found" 
-      });
-   }
-   
-   res.json(task);
-});
-
-// POST /api/tasks => creates a new task
-router.post("/", (req, res) => {
-   const {title, course, completed} = req.body;
-   
-   // Checks for required fields
-   if (!title || !course) {
-      return res.status(400).json({
-         error: "Missing required fields: title and course are required'
-      });
-   }
-
-   // Creates a new item.
-   const newItem = {
-      id: nextId++,
-      title,
-      course,
-      completed: completed ?? false // Defaults to false
-   };
-
-   tasks.push(newTask);
-   res.status(201).json(newTask);
-});
-
-
-// PUT /api/tasks/:id => replace a task
-   router.put("/:id", (req,res) => {
-   const id = Number(req.params.id);
-   const task = tasks.find(t => t.id == id);
-      
-   if (!task) { // If the item/task does not exist, return a 404 response.
-      return res.status(404).json({
-         error: "Item not found"
-      });
-   }
-   
-   const {title, course, completed} = req.body;
-   
-   // Checks for required fields
-   if (!title || !course || completed !== undefined) {
-      return res.status(400).json({
-         error: "Missing required fields: title and course are required'
-      });
-   }
-   
-  tasks[taskIndex] = { id, title, course, completed };
-  res.json(tasks[taskIndex]);
-});
-
-// PATCH /api/tasks/:id => Partially update
-router.patch("/:id", (req, res) => {
-   const id = Number(req.params.id);
-   const task = tasks.find(t => t.id == id);
-      
-   if (!task) { // If the item/task does not exist, return a 404 response.
-      return res.status(404).json({
-         error: "Item not found"
-      });
-   }
-   
-   const {title, course, completed} = req.body;
-   
-   // Updates only portions that need to be updated
-   
-   if (title !== undefined) {
-      task.title = title;
-   }
-   
-   if (course !== undefined) {
-      task.course = course;
-   }
-   
-   if (completed !== undefined) {
-      task.completed = completed;
-   }
-   
-   res.json(task);
-});      
-   
-// DELETE /api/tasks/:id => delete a task
-router.delete("/:id", (req, res) => {
-   const id = Number(req.params.id);
-   const task = tasks.findIndex(t => t.id == id);
-      
-   if (!task) { // If the item/task does not exist, return a 404 response.
-      return res.status(404).json({
-         error: "Item not found"
-      });
-   }
-   
-   if (index == -1) { // If the item does not exist, return a 404 response.
-      return res.status(404).json({
-         error: "Item not found"
-      });
-    }
-   
-   // Deleting item
-   // If the item exists, delete it and return status code 204.
-   tasks.splice(index, 1);
-
-   res.status(204).send(); // A 204 response does not need to include a response body.
-});
-      
-//src/middleware/logger.js 
-export function logger(req, res, next) {
-  const start = Date.now();
-
-  res.on("finish", () => {
-    const elapsedMs = Date.now() - start;
-    console.log(
-      `${req.method} ${req.originalUrl} ${res.statusCode} ${elapsedMs}ms`
-    );
-  });
-
-  next();
-}
-
-
-//src/middleware/errorHandler.js
-export function errorHandler(err, req, res, next) {
-  console.error(`${req.requestId} ERROR`, err);
-
-  res.status(500).json({
-    error: "Internal Server Error",
-    message: "Something went wrong on the server."
-    //requestId: req.requestId
-  });
-}
-
-package.json
-{
-  "name": "cs453-midterm-course-task-tracker",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "description": "CS 453 Midterm: Implement an Express API for the Course Task Tracker.",
-  "scripts": {
-    "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2"
-  }
-}
-
-
+************ COMPLETE ************
 
 ```
 
@@ -461,18 +247,59 @@ Required:
 2. A validation middleware for creating or updating tasks.
 
 ```
-src/
-server.js
-routes/
-tasks.js
-middleware/
-logger.js
-errorHandler.js
+src/ 
+   server.js 
+   routes/ 
+      tasks.js 
+   middleware/ 
+      logger.js 
+      errorHandler.js
 ```
 
 In answers.md, briefly explain why these are middleware concerns instead of being repeated manually inside
 every route.
 **10 points**
+
+```
+src/ 
+   server.js 
+   routes/ 
+      tasks.js 
+   middleware/ 
+      logger.js 
+      errorHandler.js
+      validateTask.js
+
+************ TO DO ************
+// server.js initializes Express, attaches the middleware, mapping the routing & handles healthpoint
+// src/server.js
+
+// tasks.js handles data stored array, IDs, field validation, and individual routes behaviors.
+// src/routes/tasks.js
+
+// validateTask.js is a validation middleware for creating or updating tasks.
+// src/middleware/validateTask.js
+
+/* logger.js is a request logger that records:
+    HTTP method,
+    path,
+    response status,
+    time taken.
+*/
+// src/middleware/logger.js
+
+// errorHandler.js catches global level errors
+// src/middleware/errorHandler.js
+
+// package.json
+
+************ COMPLETE ************
+
+Without middleware, manual repetition inside every route would be required. This 
+allows for one change or edit to happen in one locatino rather than chaning it in every route. Middleware is also 
+beneficial when spreading out the responisibilities of different logics/codes to avoid mixing unecesarry logics.
+
+```
 
 ## Part 5 — Basic Client
 

@@ -1,4 +1,11 @@
-//src/middleware/logger.js
+/* logger.js is a request logger that records:
+    HTTP method,
+    path,
+    response status,
+    time taken.
+*/
+// src/middleware/logger.js
+
 export function logger(req, res, next) {
     const start = Date.now();
 

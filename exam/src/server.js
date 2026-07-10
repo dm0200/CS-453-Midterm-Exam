@@ -1,5 +1,5 @@
 // server.js initializes Express, attaches the middleware, mapping the routing & handles healthpoint
-//src/server.js
+// src/server.js
 
 //import "dotenv/config";
 import express from "express";
