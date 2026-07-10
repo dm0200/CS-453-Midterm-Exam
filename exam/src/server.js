@@ -24,7 +24,7 @@ export function createApp() {
     app.use(logger);
 
     // Health checkpoint
-    app.get("health", (req, res) => {
+    app.get("/health", (req, res) => {
         res.json({
             status: "ok",
             message: "Server is healthy"
@@ -32,7 +32,7 @@ export function createApp() {
     });
 
     // Task resource routes grouped under /api/tasks
-    app.use("api/tasks", tasksRouter);
+    app.use("/api/tasks", tasksRouter);
 
     // Global centralized error handling middleware
     app.use(errorHandler);

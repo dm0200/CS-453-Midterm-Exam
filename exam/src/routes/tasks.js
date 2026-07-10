@@ -6,9 +6,9 @@ import { Router } from "express";
 export const router = Router();
 
 // In-memory database array
-let nextID = 3;
+let nextId = 3;
 let tasks = [
-    { id: 1, title: "Watch Week 1 lecture, course: "CS453", completed: false },
+    { id: 1, title: "Watch Week 1 lecture", course: "CS453", completed: false },
     { id: 2, title: "Complete Lab 1", course: "CS453", completed: true }
 ];
 
@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
 });
 
 // GET /api/tasks/:id => return one task
-router.get("/", (req, res) => {
+router.get("/:id", (req, res) => {
     const id = Number(req.params.id);
     const task = tasks.find(t => t.id === id);
 
@@ -38,12 +38,12 @@ router.post("/", (req, res) => {
     // Checks for required fields
     if (!title || !course) {
         return res.status(400).json({
-            error: "Missing required fields: title and course are required'
+            error: "Missing required fields: title and course are required"
         });
     }
 
     // Creates a new item.
-    const newItem = {
+    const newTask = {
         id: nextId++,
         title,
         course,
@@ -58,9 +58,9 @@ router.post("/", (req, res) => {
 // PUT /api/tasks/:id => replace a task
 router.put("/:id", (req,res) => {
     const id = Number(req.params.id);
-    const task = tasks.find(t => t.id == id);
+    const taskIndex = tasks.findIndex(t => t.id == id);
 
-    if (!task) { // If the item/task does not exist, return a 404 response.
+    if (taskIndex === -1) { // If the item/task does not exist, return a 404 response.
         return res.status(404).json({
             error: "Item not found"
         });
@@ -69,20 +69,24 @@ router.put("/:id", (req,res) => {
     const {title, course, completed} = req.body;
 
     // Checks for required fields
-    if (!title || !course || completed !== undefined) {
+    if (!title || !course || completed === undefined) {
         return res.status(400).json({
-            error: "Missing required fields: title and course are required'
+            error: "Missing required fields: title and course are required"
         });
     }
 
-    tasks[taskIndex] = { id, title, course, completed };
+    tasks[taskIndex] = {
+        id,
+        title,
+        course,
+        completed: completed ?? false }; // Automatically Default to false
     res.json(tasks[taskIndex]);
 });
 
 // PATCH /api/tasks/:id => Partially update
 router.patch("/:id", (req, res) => {
     const id = Number(req.params.id);
-    const task = tasks.find(t => t.id == id);
+    const task = tasks.find(t => t.id === id);
 
     if (!task) { // If the item/task does not exist, return a 404 response.
         return res.status(404).json({
@@ -112,15 +116,16 @@ router.patch("/:id", (req, res) => {
 // DELETE /api/tasks/:id => delete a task
 router.delete("/:id", (req, res) => {
     const id = Number(req.params.id);
-    const task = tasks.findIndex(t => t.id == id);
+    const index = tasks.findIndex(t => t.id === id);
 
+    /*
     if (!task) { // If the item/task does not exist, return a 404 response.
         return res.status(404).json({
             error: "Item not found"
         });
-    }
+    }*/
 
-    if (index == -1) { // If the item does not exist, return a 404 response.
+    if (index === -1) { // If the item does not exist, return a 404 response.
         return res.status(404).json({
             error: "Item not found"
         });
