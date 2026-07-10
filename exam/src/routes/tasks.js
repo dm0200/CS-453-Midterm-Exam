@@ -63,7 +63,7 @@ router.put("/:id", validateTask, (req,res) => {
     const id = Number(req.params.id);
     const taskIndex = tasks.findIndex(t => t.id == id);
 
-    if (taskIndex === -1) { // If the item/task does not exist, return a 404 response.
+    if (taskIndex === -1) { // If the item/task does not exist, return a 404 response status code.
         return res.status(404).json({
             error: "Item not found"
         });
@@ -74,7 +74,7 @@ router.put("/:id", validateTask, (req,res) => {
     // Checks for required fields
     if (completed === undefined) {
         return res.status(400).json({
-            error: "Missing required fields: complete is required"
+            error: "Missing required fields - complete is required"
         });
     }
 
@@ -92,7 +92,7 @@ router.patch("/:id", (req, res) => {
     const id = Number(req.params.id);
     const task = tasks.find(t => t.id === id);
 
-    if (!task) { // If the item/task does not exist, return a 404 response.
+    if (!task) { // If the item/task does not exist, return a 404 response status code.
         return res.status(404).json({
             error: "Item not found"
         });
@@ -129,7 +129,7 @@ router.delete("/:id", (req, res) => {
         });
     }*/
 
-    if (index === -1) { // If the item does not exist, return a 404 response.
+    if (index === -1) { // If the item does not exist, return a 404 response status code.
         return res.status(404).json({
             error: "Item not found"
         });

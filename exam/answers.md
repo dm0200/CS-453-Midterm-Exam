@@ -305,7 +305,9 @@ beneficial when spreading out the responisibilities of different logics/codes to
 
 **10 points**
 Write a small client program that calls your API.
+
 This can be a Node script using fetch.
+
 The client should demonstrate:
 
 1. calling /health,
@@ -314,50 +316,129 @@ The client should demonstrate:
 4. getting one task by id,
 5. updating a task,
 6. deleting a task.
-   The client does not need a GUI. Console output is fine.
-   Example:
 
-**10 points**
-
-## Part 6 — OpenAPI Specification
-
-**15 points**
-Create an openapi.yaml file documenting your API.
-It must include:
-OpenAPI version,
-API title and version,
-server URL,
-paths for all required routes,
-path parameter for :id,
-request body schemas for POST, PUT, and PATCH,
-response schemas,
-common error responses such as 400 and 404 ,
-a reusable Task schema under components.schemas.
-
+The client does not need a GUI. Console output is fine.
+   
+Example:
 ```
 node client.js
 ```
 
+**10 points**
+
+```
+src/ 
+   server.js 
+   client.js 
+   routes/ 
+      tasks.js 
+   middleware/ 
+      logger.js 
+      errorHandler.js
+      validateTask.js
+      
+************ TO DO ************
+
+/* client.js is a small client program that calls the API & demonstrates:
+1. calling /health,
+2. creating a task,
+3. listing all tasks,
+4. getting one task by id,
+5. updating a task,
+6. deleting a task.
+*/
+// client.js
+
+************ COMPLETE ************
+
+```
+
+## Part 6 — OpenAPI Specification
+
 **15 points**
+Create an ```openapi.yaml``` file documenting your API.
+
+It must include:
+
+- OpenAPI version,
+- API title and version,
+- server URL,
+- paths for all required routes,
+- path parameter for ```:id```,
+- request body schemas for ```POST```, ```PUT```, and ```PATCH```,
+- response schemas,
+- common error responses such as ```400``` and ```404```,
+- a reusable ```Task``` schema under ```components.schemas```.
+
+**15 points**
+
+```
+src/ 
+   server.js 
+   client.js 
+   openapi.yaml
+   routes/ 
+      tasks.js 
+   middleware/ 
+      logger.js 
+      errorHandler.js
+      validateTask.js
+      
+************ TO DO ************
+
+/* openapi.yaml documents the API & includes:
+
+- OpenAPI version,
+- API title and version,
+- server URL,
+- paths for all required routes,
+- path parameter for :id,
+- request body schemas for POST, PUT, and PATCH,
+- response schemas,
+- common error responses such as 400 and 404,
+- a reusable Task schema under components.schemas.
+
+*/
+// openapi.yaml
+
+************ COMPLETE ************
+
+```
 
 ## Part 7 — Reflection
 
 **10 points**
-In answers.md, answer the following:
+In ```answers.md```, answer the following:
 
 ### 1. Code vs. Contract
 
 Explain the difference between an Express route implementation and an OpenAPI specification.
+
 **4 points**
+
+```
+The difference between an Express route implementation and an OpenAPI specification.
+
+```
 
 ### 2. Drift
 
 Give two examples of how code and OpenAPI documentation can drift apart.
+
 **3 points**
+
+```
+The difference between an Express route implementation and an OpenAPI specification.
+
+```
 
 ### 3. Client Impact
 
 Explain why inaccurate API documentation can cause problems for client developers.
+
 **3 points**
 
+```
+The difference between an Express route implementation and an OpenAPI specification.
 
+```

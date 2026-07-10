@@ -1,0 +1,303 @@
+openapi: 3.0.3
+
+info:
+  title: CS453 Midterm Exam - Course Task Tracker API
+  version: 1.0.0
+  description: >
+    Create an openapi.yaml file documenting your API.
+
+    It must include:
+
+    - OpenAPI version,
+    - API title and version,
+    - server URL,
+    - paths for all required routes,
+    - path parameter for :id,
+    - request body schemas for POST, PUT, and PATCH,
+    - response schemas,
+    - common error responses such as 400 and 404,
+    - a reusable Task schema under components.schemas.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+paths:
+  # Return a health check response
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Server is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+              example:
+                status: ok
+
+  # Document GET /tasks and POST /tasks
+  /api/tasks:
+    get:
+      summary: Get all tasks
+      responses:
+        "200":
+          description: List all tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+              example:
+                - id: 1
+                  title: Watch Week 3 Lecture
+                  course: CS453
+                  completed: false
+                - id: 2
+                  title: Complete Midterm
+                  course: CS453
+                  completed: true
+
+    post:
+      summary: Creates a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+            example:
+              title: Complete Exercise 1
+              course: CS453
+              completed: false
+      responses:
+        "201":
+          description: Successfully created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+              example:
+                id: 3
+                title: Watch Week 3 Lecture
+                course: CS453
+                completed: false
+        "400":
+          description: Invalid/missing fields or bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Title and course are required
+
+    # Document GET /task/{id}, PUT /task/{id}, PATCH /task/{id}, and DELETE /task/{id}
+    # Remember:
+    # - Express routes use :id, such as /task/:id.
+    # - OpenAPI paths use {id}, such as /task/{id}.
+
+  /api/tasks/{id}:
+    get:
+      summary: Get task by ID
+      parameters:
+        - $ref: "#/components/parameters/TaskID"
+      responses:
+        "200":
+          description: Successfully found task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+              example:
+                id: 1
+                title: Watch Week 1 Lecture
+                course: CS453
+                completed: false
+        "404":
+          description: Did not successfully find task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Task not found
+    put:
+      summary: Replaces an existing task
+      parameters:
+        - $ref: "#/components/parameters/TaskID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+            example:
+              title: Replaced Lab title
+              course: CS453
+              completed: true
+      responses:
+        "200":
+          description: Replaced item successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Missing or invalid fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: title and course are required
+        "404":
+          description: Did not successfully find task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Task not found
+
+    patch:
+      summary: Updates part of an existing task
+      parameters:
+        - $ref: "#/components/parameters/TaskID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskPatch"
+            example:
+                completed: true
+      responses:
+        "200":
+          description: Updated task successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Missing or invalid fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Title and course are required
+        "404":
+          description: Did not successfully find task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Task not found
+
+    delete:
+      summary: Delete an existing task
+      parameters:
+        - $ref: "#/components/parameters/TaskID"
+      responses:
+        "204":
+          description: Task deleted
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: Task not found
+
+components:
+  parameters:
+    # Path parameter for task ID
+    TaskID:
+      name: id
+      in: path
+      required: true
+      description: Task's id number
+      schema:
+        type: integer
+        example: 1
+  schemas:
+    # Full task object returned by server
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Id assigned by the server
+          example: 1
+        title:
+          type: string
+          description: Task title
+          example: Watch Week 1 lecture
+        course:
+          type: string
+          description: Task's course
+          example: CS453
+        completed:
+          type: boolean
+          description: Has the task been completed?
+          example: true
+      required:
+        - id
+        - title
+        - course
+        - completed
+
+    # Request body for POST and PUT (no id field required)
+    TaskInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Task title
+          example: Watch Week 1 lecture
+        course:
+          type: string
+          description: Task's course
+          example: CS453
+        completed:
+          type: boolean
+          description: Has the task been completed?
+          example: true
+      required:
+        - title
+        - course
+
+    # Request body for PATCH (all fields are optional)
+    TaskPatch:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Updated task's title
+          example: Updated lecture title
+        course:
+          type: string
+          description: Updated task's course
+          example: CS453
+        completed:
+          type: boolean
+          description: Updated if the task's been completed
+          example: false
+
+    # Error Response (error required)
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Not found
+      required:
+        - error
