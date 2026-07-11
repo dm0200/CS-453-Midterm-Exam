@@ -11,7 +11,9 @@ The example demonstrates:
 - in-memory array data handling
 - global error handling
 
-## Install
+# (path = CS-453-Midterm-Exam/exam)
+
+## Install 
 
 ```bash
 npm install
@@ -29,7 +31,7 @@ The server runs on:
 http://localhost:3000
 ```
 
-## Try it
+## Try it (another terminal)
 
 Health check:
 

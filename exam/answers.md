@@ -87,9 +87,8 @@ A successful request returns JSON data            200 - Used for "ok" instances 
 
 **15 points**
 You are designing an API for a small **Course Task Tracker**. The API manages tasks for a class.
-Each task has:
 
-Design a REST-style API for this resource.
+Each task has:
 
 ```
 {
@@ -100,13 +99,15 @@ Design a REST-style API for this resource.
 }
 ```
 
+Design a REST-style API for this resource.
+
 ```
 Method Route Behavior
 GET /health returns a simple health message
 GET /api/tasks returns all tasks
 GET /api/tasks/:id returns one task or 404
 ```
-In answers.md, provide:
+In ```answers.md```, provide:
 
 ### 1. Resource URIs
 
@@ -417,8 +418,9 @@ Explain the difference between an Express route implementation and an OpenAPI sp
 **4 points**
 
 ```
-The difference between an Express route implementation and an OpenAPI specification.
-
+The difference between an Express route implementation and an OpenAPI specification is the Express server is the thing 
+that runs. The OpenAPI file is the written promise about how that server behaves. The Express routes still have to 
+implement that behavior. They should match but nothing automatically enforces that they do.
 ```
 
 ### 2. Drift
@@ -428,8 +430,11 @@ Give two examples of how code and OpenAPI documentation can drift apart.
 **3 points**
 
 ```
-The difference between an Express route implementation and an OpenAPI specification.
-
+Two examples of how code and OpenAPI documentation can drift apart are if there is a new detail about an item or task 
+that is added & it does not get documented or one of the status codes is changed & the spec is not updated. The OpenAPI 
+documentation lists specific fields & when one is added to code, it must also be added to the OpenAPI documentation. 
+Once again, the status code & OpenAPI documentation must match in order to follow the pattern, otherwise a client could 
+attempt to following a spec and may break trying to parse it.
 ```
 
 ### 3. Client Impact
@@ -439,6 +444,8 @@ Explain why inaccurate API documentation can cause problems for client developer
 **3 points**
 
 ```
-The difference between an Express route implementation and an OpenAPI specification.
-
+Inaccurate API documentation can cause problems for client developers because the client needs to know what requests are
+allowed so that the server needs to return predictable responses & the spec records that agreement in YAML or JSON. 
+Errors, risk, time wasted, etc. can stem from building against wrong contracts, unable to process errors correctly, etc.
+due to inaccurate API documentation.
 ```
